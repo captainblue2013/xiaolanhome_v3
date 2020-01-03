@@ -5,6 +5,7 @@
 .logo>img {
     border: 1px solid #FFFFFF;
     width: 3.5rem;
+    max-width: 100%;
     height: auto;
     border-radius: 50%;
 }

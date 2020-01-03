@@ -12,6 +12,13 @@ class Content extends Component<{}, { articles: Array<Article> }> {
         time: 1578042472796,
         tags: ['javascript', 'test'],
         desc: 'test descriptions, test descriptions, test descriptions, test descriptions, test descriptions, ',
+      },
+      {
+        id: 1,
+        title: 'test article 01,test article 01',
+        time: 1578042472796,
+        tags: ['javascript', 'test'],
+        desc: 'test descriptions, test descriptions, test descriptions, test descriptions, test descriptions, ',
       }
     ]
   }

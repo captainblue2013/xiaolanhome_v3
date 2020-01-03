@@ -9,10 +9,10 @@ class Author extends Component<{ github: string, author: string }, {}> {
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col span={3}>
+          <Col lg={3} md={6} sm={6} xs={6}>
             <Logo />
           </Col>
-          <Col span={21}>
+          <Col lg={21} md={18} sm={18} xs={16}>
             <p className={style.slogan}>
               <a href={github} >{author}</a> 个人博客
             </p>
