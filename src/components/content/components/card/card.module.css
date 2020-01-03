@@ -24,6 +24,9 @@
 
 .card p.desc {
     color: rgba(120, 120, 120, 1);
-    max-height: 5rem;
     overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
