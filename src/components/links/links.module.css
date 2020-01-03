@@ -1,0 +1,15 @@
+.linksBar {
+    margin-top: 4.375rem;
+    padding-top: 1.75rem;
+    text-align: left;
+    font-size: 1.1rem;
+}
+
+.linksBar a {
+    color: rgba(200, 200, 200, 1);
+    margin-right: 1rem;
+}
+
+.linksBar a i {
+    margin-right: 2px;
+}
