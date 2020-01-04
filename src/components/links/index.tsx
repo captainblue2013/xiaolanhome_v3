@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import style from './links.module.css';
-import { Icon } from "antd";
+import { Icon, Popover } from "antd";
+import QrCode from '../qrcode';
+
 
 class Links extends Component<{ github: string }, {}> {
 
@@ -12,7 +14,11 @@ class Links extends Component<{ github: string }, {}> {
         <a
           onClick={(e) => { e.preventDefault() }}
           href="."
-        ><Icon type="wechat" />Wechat</a>
+        >
+          <Popover placement="topLeft" content={<QrCode />}>
+            <Icon type="wechat" />Wechat
+          </Popover>
+        </a>
       </div>
     );
   }

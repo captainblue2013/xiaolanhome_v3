@@ -46,6 +46,7 @@ class Page extends Component<{}, Article> {
         const { data: { code, data } } = v;
         if (!code) {
           this.setState(data);
+          window.document.title = (data as Article).title;
         }
       }).catch(e => {
         console.log(e);

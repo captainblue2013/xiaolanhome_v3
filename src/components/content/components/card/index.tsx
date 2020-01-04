@@ -30,7 +30,15 @@ class Card extends Component<Article, {}>{
     const { title, time, tags, desc, id } = this.props;
     return (
       <div className={style.card} key={id}>
-        <h3><a target="_blank" href={`/${id}`}>{title}</a></h3>
+        <h3>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`/${id}`}
+          >
+            {title}
+          </a>
+        </h3>
         <p>
           <span>{dayjs(time).format('MMMM DD, YYYY')}</span>
           {tags.map((tag) => {
