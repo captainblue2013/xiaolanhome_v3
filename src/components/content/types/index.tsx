@@ -4,4 +4,5 @@ export type Article = {
   time: number,
   tags: Array<string>,
   desc: string,
+  content?: string,
 }

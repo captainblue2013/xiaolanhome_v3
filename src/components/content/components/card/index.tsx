@@ -29,13 +29,14 @@ class Card extends Component<Article, {}>{
   render() {
     const { title, time, tags, desc, id } = this.props;
     return (
-      <div className={style.card}>
-        <h3><a href={`/${id}`}>{title}</a></h3>
+      <div className={style.card} key={id}>
+        <h3><a target="_blank" href={`/${id}`}>{title}</a></h3>
         <p>
           <span>{dayjs(time).format('MMMM DD, YYYY')}</span>
           {tags.map((tag) => {
             return (
               <Tag
+                key={tag}
                 style={{ backgroundColor: "#272B35" }}
                 color={this.tagColor(tag)}
               >{tag}</Tag>

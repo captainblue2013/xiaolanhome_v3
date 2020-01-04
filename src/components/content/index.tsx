@@ -1,51 +1,77 @@
-import React, { Component } from "react";
-import style from './style.module.css';
-import { Article } from "./types";
-import Card from './components/card';
-import { Button } from "antd";
+import { Spin } from 'antd';
+import axios from 'axios';
+import React, { Component } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
 
-class Content extends Component<{}, { articles: Array<Article>, empty: boolean }> {
-  state = {
-    empty: true,
+import { API_URL } from '../../constant';
+import Card from './components/card';
+import style from './style.module.css';
+import { Article } from './types';
+
+type ContentState = {
+  articles: Array<Article>,
+  loading: boolean,
+  hasMore: boolean,
+  page: number,
+};
+
+class Content extends Component<{}, ContentState> {
+  state: ContentState = {
+    page: 1,
+    loading: true,
+    hasMore: true,
     articles: []
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        empty: false,
-        articles: [
-          {
-            id: 1,
-            title: 'test article 01,test article 01',
-            time: 1578042472796,
-            tags: ['javascript', 'test'],
-            desc: 'test descriptions, test descriptions, test descriptions, test descriptions, test descriptions, ',
-          },
-          {
-            id: 1,
-            title: 'test article 01,test article 01',
-            time: 1578042472796,
-            tags: ['javascript', 'test'],
-            desc: 'test descriptions, test descriptions, test descriptions, test descriptions, test descriptions, ',
-          }
-        ]
+  fetchData() {
+    return axios.get(`${API_URL}/articles?page=${this.state.page}`)
+      .then(v => {
+        const { data: { code, data } } = v;
+        if (!code) {
+          this.setState({
+            page: this.state.page + 1,
+            hasMore: data.length === 10,
+            loading: false,
+            articles: [...this.state.articles, ...data],
+          });
+        }
+      }).catch(e => {
+        console.log(e);
       });
-    }, 3000);
+  }
+
+  handleInfiniteOnLoad = () => {
+    if (!this.state.hasMore) {
+      return false;
+    }
+    this.fetchData();
+    return true;
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   render() {
-    const { articles,empty } = this.state;
+    const { articles, loading, hasMore, page } = this.state;
     return (
       <div className={style.content}>
-        {
-          articles.map((article) => {
-            return (
-              <Card {...article} />
-            )
-          })
-        }
-        {empty && (<Button shape="circle" loading />)}
+        {window.location.pathname === '/'}
+        <InfiniteScroll
+          initialLoad={false}
+          pageStart={page}
+          loadMore={this.handleInfiniteOnLoad}
+          hasMore={hasMore}
+        >
+          {
+            articles.map((article: Article) => {
+              return (
+                <Card {...article} key={article.id} />
+              )
+            })
+          }
+          {loading && (<Spin tip="Loading..."></Spin>)}
+        </InfiniteScroll>
       </div>
     );
   }
