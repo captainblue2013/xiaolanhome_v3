@@ -15,7 +15,11 @@ type ContentState = {
   page: number,
 };
 
-class Content extends Component<{}, ContentState> {
+type ContentProps = {
+  keyword?: string
+}
+
+class Content extends Component<ContentProps, ContentState> {
   state: ContentState = {
     page: 1,
     loading: true,
@@ -23,16 +27,18 @@ class Content extends Component<{}, ContentState> {
     articles: []
   }
 
-  fetchData() {
-    return axios.get(`${API_URL}/articles?page=${this.state.page}`)
+  fetchData(clear: boolean = false) {
+    const { page } = this.state;
+    const { keyword = '' } = this.props;
+    return axios.get(`${API_URL}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
       .then(v => {
         const { data: { code, data } } = v;
         if (!code) {
           this.setState({
-            page: this.state.page + 1,
+            page: (clear ? 1 : page) + 1,
             hasMore: data.length === 10,
             loading: false,
-            articles: [...this.state.articles, ...data],
+            articles: [...(clear ? [] : this.state.articles), ...data],
           });
         }
       }).catch(e => {
@@ -49,7 +55,11 @@ class Content extends Component<{}, ContentState> {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(true);
+  }
+
+  componentWillReceiveProps(nextProps: ContentProps) {
+    this.fetchData(true);
   }
 
   render() {

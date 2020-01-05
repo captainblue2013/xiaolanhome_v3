@@ -40,7 +40,7 @@ class Card extends Component<Article, {}>{
           </a>
         </h3>
         <p>
-          <span>{dayjs(time).format('MMMM DD, YYYY')}</span>
+          <span>{dayjs(time * 1000).format('MMMM DD, YYYY')}</span>
           {tags.map((tag) => {
             return (
               <Tag

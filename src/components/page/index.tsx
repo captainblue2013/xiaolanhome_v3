@@ -68,9 +68,9 @@ class Page extends Component<{}, Article> {
     } = this.state;
     return (
       <div className={style.article}>
-        <Header siteName={title} />
+        <Header hideSearch={true} siteName={title} cb={(value: string): void => { }} />
         <p>
-          <span>{dayjs(time).format('MMMM DD, YYYY')}</span>
+          <span>{dayjs(time * 1000).format('MMMM DD, YYYY')}</span>
           {tags.map((tag) => {
             return (
               <Tag
