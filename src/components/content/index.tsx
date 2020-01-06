@@ -1,7 +1,6 @@
-import { Spin } from 'antd';
+import { Button, Empty, notification, Icon } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
 
 import { API_URL } from '../../constant';
 import Card from './components/card';
@@ -27,9 +26,8 @@ class Content extends Component<ContentProps, ContentState> {
     articles: []
   }
 
-  fetchData(clear: boolean = false) {
+  fetchData(clear: boolean = false, keyword: string = '') {
     const { page } = this.state;
-    const { keyword = '' } = this.props;
     return axios.get(`${API_URL}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
       .then(v => {
         const { data: { code, data } } = v;
@@ -40,48 +38,70 @@ class Content extends Component<ContentProps, ContentState> {
             loading: false,
             articles: [...(clear ? [] : this.state.articles), ...data],
           });
+          if ((data as Array<Article>).length === 0) {
+            notification.warning({
+              icon: <Icon type="frown" style={{ color: '#108ee9' }} />,
+              message: '够了！',
+              description:
+                '已经没有更多的内容了。',
+              placement: 'bottomRight',
+            });
+          }
         }
       }).catch(e => {
         console.log(e);
       });
   }
 
-  handleInfiniteOnLoad = () => {
-    if (!this.state.hasMore) {
-      return false;
-    }
-    this.fetchData();
-    return true;
-  }
 
   componentDidMount() {
     this.fetchData(true);
   }
 
   componentWillReceiveProps(nextProps: ContentProps) {
-    this.fetchData(true);
+    this.fetchData(true, nextProps.keyword);
+  }
+
+  buttonClick = () => {
+    if (this.state.loading) {
+      return false;
+    }
+    this.setState({
+      ...this.state,
+      loading: true,
+    });
+    setTimeout(() => {
+      this.fetchData();
+    }, 500);
+
   }
 
   render() {
-    const { articles, loading, hasMore, page } = this.state;
+    const { articles, loading, hasMore, /*page*/ } = this.state;
+    const buttonClick = this.buttonClick.bind(this);
     return (
       <div className={style.content}>
-        {window.location.pathname === '/'}
-        <InfiniteScroll
-          initialLoad={false}
-          pageStart={page}
-          loadMore={this.handleInfiniteOnLoad}
-          hasMore={hasMore}
-        >
-          {
-            articles.map((article: Article) => {
-              return (
-                <Card {...article} key={article.id} />
-              )
-            })
-          }
-          {loading && (<Spin tip="Loading..."></Spin>)}
-        </InfiniteScroll>
+        {
+          articles.map((article: Article) => {
+            return (
+              <Card {...article} key={article.id} />
+            )
+          })
+        }
+        {hasMore && (
+          <Button
+            ghost
+            block
+            onClick={buttonClick}
+            loading={loading}
+          >
+            继续阅读...
+        </Button>)}
+        {/* {loading && (<Spin tip="Loading..."></Spin>)} */}
+
+        {this.state.articles.length === 0 && !this.state.loading && (
+          <Empty description={false} />
+        )}
       </div>
     );
   }
