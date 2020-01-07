@@ -2,32 +2,27 @@ import { Input, Row, Col } from 'antd';
 import React, { Component } from 'react';
 
 import style from './header.module.css';
+import { StateTree } from '../../state/combine';
+import connect from '../../state/connect';
+import { setKeyword } from '../../state/keyword/action';
 
 const { Search } = Input;
 
-class Header extends Component<{ hideSearch?: boolean, siteName: string, cb: (value: string) => void }, { keyword: string }> {
+class Header extends Component {
 
   state = {
     keyword: '',
   };
 
   doSearch(value: string) {
-    const { cb } = this.props;
-    cb(value);
-    this.setState({
-      ...this.state,
-      keyword: value,
-    });
+    (this.props as StateTree).dispatch(setKeyword(value));
   }
 
   render() {
-    const { siteName } = this.props;
-
+    const { constant: { siteName }, keyword: { hiddenSearch } } = (this.props as StateTree);
     return (
       <div className={style.headline}>
-
-
-        {!this.props.hideSearch ? (
+        {!hiddenSearch ? (
           <Row type="flex" justify="center" align="middle">
             <Col lg={12} md={12} sm={24} xs={24}>
               <h1>{siteName}</h1>
@@ -48,4 +43,4 @@ class Header extends Component<{ hideSearch?: boolean, siteName: string, cb: (va
   }
 }
 
-export default Header;
+export default connect(Header);

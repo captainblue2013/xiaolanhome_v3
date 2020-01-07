@@ -8,8 +8,6 @@ import Author from './components/author';
 import Links from './components/links';
 import Page from './components/page';
 
-import { GITHUB, AUTHOR, SITE_NAME } from './constant';
-
 class App extends Component<{}, { keyword: string }> {
 
   state = {
@@ -31,12 +29,12 @@ class App extends Component<{}, { keyword: string }> {
             {window.location.pathname === '/' ?
               (
                 <div>
-                  <Header siteName={SITE_NAME} cb={this.setKeyword.bind(this)} />
-                  <Author github={GITHUB} author={AUTHOR} />
-                  <Content keyword={this.state.keyword} />
+                  <Header />
+                  <Author />
+                  <Content />
                 </div>
               ) : <Page />}
-            <Links github={GITHUB} />
+            <Links />
           </Col>
         </Row>
       </div>

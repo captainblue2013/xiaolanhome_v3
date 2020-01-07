@@ -3,7 +3,9 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';
 
-import { API_URL } from '../../constant';
+import { StateTree } from '../../state/combine';
+import connect from '../../state/connect';
+import { setHiddenSearch } from '../../state/keyword';
 import { Article } from '../content/types';
 import Header from '../header';
 import style from './page.module.css';
@@ -41,7 +43,8 @@ class Page extends Component<{}, Article> {
   }
 
   fetchData(id: number) {
-    return axios.get(`${API_URL}/article?id=${id}`)
+    const { apiUrl } = (this.props as StateTree).constant;
+    return axios.get(`${apiUrl}/article?id=${id}`)
       .then(v => {
         const { data: { code, data } } = v;
         if (!code) {
@@ -54,21 +57,20 @@ class Page extends Component<{}, Article> {
   }
 
   componentDidMount() {
+    (this.props as StateTree).dispatch(setHiddenSearch(true));
     const id: number = Number.parseInt(window.location.pathname.replace('/', ''), 10);
     this.fetchData(id);
   }
 
   render() {
     const {
-      title,
       time,
       tags,
       content,
-      // desc, 
     } = this.state;
     return (
       <div className={style.article}>
-        <Header hideSearch={true} siteName={title} cb={(value: string): void => { }} />
+        <Header />
         <p>
           <span>{dayjs(time * 1000).format('MMMM DD, YYYY')}</span>
           {tags.map((tag) => {
@@ -90,4 +92,4 @@ class Page extends Component<{}, Article> {
   }
 }
 
-export default Page;
+export default connect(Page);
