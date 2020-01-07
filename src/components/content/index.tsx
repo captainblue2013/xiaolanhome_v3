@@ -2,10 +2,11 @@ import { Button, Empty, notification, Icon } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
 
-import { API_URL } from '../../constant';
 import Card from './components/card';
 import style from './style.module.css';
 import { Article } from './types';
+import connect from '../../state/connect';
+import { StateTree } from '../../state/combine';
 
 type ContentState = {
   articles: Array<Article>,
@@ -14,11 +15,8 @@ type ContentState = {
   page: number,
 };
 
-type ContentProps = {
-  keyword?: string
-}
 
-class Content extends Component<ContentProps, ContentState> {
+class Content extends Component<{}, ContentState> {
   state: ContentState = {
     page: 1,
     loading: true,
@@ -28,7 +26,8 @@ class Content extends Component<ContentProps, ContentState> {
 
   fetchData(clear: boolean = false, keyword: string = '') {
     const { page } = this.state;
-    return axios.get(`${API_URL}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
+    const { apiUrl } = (this.props as StateTree).constant;
+    return axios.get(`${apiUrl}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
       .then(v => {
         const { data: { code, data } } = v;
         if (!code) {
@@ -58,8 +57,9 @@ class Content extends Component<ContentProps, ContentState> {
     this.fetchData(true);
   }
 
-  componentWillReceiveProps(nextProps: ContentProps) {
-    this.fetchData(true, nextProps.keyword);
+  componentWillReceiveProps(nextProps: StateTree) {
+    const { keyword: { keyword } } = nextProps;
+    this.fetchData(true, keyword);
   }
 
   buttonClick = () => {
@@ -78,6 +78,7 @@ class Content extends Component<ContentProps, ContentState> {
 
   render() {
     const { articles, loading, hasMore, /*page*/ } = this.state;
+
     const buttonClick = this.buttonClick.bind(this);
     return (
       <div className={style.content}>
@@ -107,4 +108,4 @@ class Content extends Component<ContentProps, ContentState> {
   }
 }
 
-export default Content;
+export default connect(Content);

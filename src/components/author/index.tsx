@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Col, Row } from "antd";
 import Logo from "../logo";
 import style from './author.module.css';
+import { StateTree } from "../../state/combine";
+import connect from "../../state/connect";
 
-class Author extends Component<{ github: string, author: string }, {}> {
+class Author extends Component {
   render() {
-    const { github, author } = this.props;
+    const { github, author } = (this.props as StateTree).constant;
     return (
       <div>
         <Row type="flex" justify="center">
@@ -23,4 +25,4 @@ class Author extends Component<{ github: string, author: string }, {}> {
   }
 }
 
-export default Author;
+export default connect(Author);
