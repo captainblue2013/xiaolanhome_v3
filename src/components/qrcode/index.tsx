@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
-import style from './qrcode.module.css';
+import { useStore } from '@mohism/react-duce-ts';
+import React from 'react';
+
 import qr from './qrcode.jpeg';
-import connect from '../../state/connect';
-import { StateTree } from '../../state/combine';
+import style from './qrcode.module.css';
 
-class QrCode extends Component {
-
-  render() {
-    const { author } = (this.props as StateTree).constant;
-    return (
-      <div className={style.qrcode}>
-        <img src={qr} alt={author} />
-      </div>
-    );
-  }
+function QrCode() {
+  const [{author}] = useStore('constant');
+  return (
+    <div className={style.qrcode}>
+      <img src={qr} alt={author} />
+    </div>
+  );
 }
-
-export default connect(QrCode);
+export default QrCode;

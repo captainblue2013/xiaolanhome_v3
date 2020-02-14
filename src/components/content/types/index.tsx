@@ -5,4 +5,11 @@ export type Article = {
   tags: Array<string>,
   desc: string,
   content?: string,
-}
+};
+
+export type ContentState = {
+  articles: Array<Article>,
+  loading: boolean,
+  hasMore: boolean,
+  page: number,
+};
