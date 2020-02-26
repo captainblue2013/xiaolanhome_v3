@@ -1,3 +1,4 @@
+import { useStore } from '@mohism/react-duce-ts';
 import { Tag } from 'antd';
 import axios, { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
@@ -8,11 +9,9 @@ import { Article } from '../content/types';
 import Header from '../header';
 import style from './page.module.css';
 
-const apiUrl = 'http://api.lanhao.name';
-
 export default function Page() {
-
   const id: number = Number.parseInt(window.location.pathname.replace('/', ''), 10);
+  const [{ apiUrl }] = useStore('constant');
   const [error, setError] = useState('');
   const [article, setArticle] = useState({
     id: 0,
@@ -29,13 +28,14 @@ export default function Page() {
         if (v.data?.code !== 0) {
           setError(v.data?.message || 'unknown error');
         } else {
+          window.document.title = v.data?.data?.title || window.document.title;
           setArticle(v.data?.data);
         }
       })
       .catch((e: Error) => {
         setError(e.message)
       })
-  }, [id]);
+  }, [id, apiUrl]);
 
   if (error) return <p>Error!</p>
 

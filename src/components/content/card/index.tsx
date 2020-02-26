@@ -33,7 +33,7 @@ function Card(props: Article) {
         })}
       </p>
       <p className={style.desc}>
-        {desc.repeat(4)}
+        {desc}
       </p>
     </div>
   );

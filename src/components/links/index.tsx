@@ -19,7 +19,7 @@ function Links() {
           <Icon type="wechat" />Wechat
           </Popover>
       </a>
-      <p>build: 200212</p>
+      <p>build: 200215</p>
     </div>
   );
 }
