@@ -1,0 +1,64 @@
+.article {
+    text-align: left;
+}
+
+.article p {
+    color: #FFFFFF;
+}
+
+.article p span {
+    margin-right: 0.5rem;
+}
+
+.content {
+    color: rgba(220, 220, 220, 1);
+}
+
+.content h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: rgba(220, 220, 220, 1);
+}
+
+.content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.content img {
+    width: 100%;
+    height: auto;
+    margin: 0.5rem auto;
+}
+
+.content pre {
+    background-color: #000;
+    padding: 0.5rem;
+}
+
+.content blockquote {
+    padding: 0.5rem 1rem;
+    border-left: 5px solid #00A09B;
+    line-height: 1rem;
+}
+
+.content blockquote p {
+    margin: 0;
+}
+
+.content code {
+    color: darkgoldenrod;
+    padding: 0 0.5rem;
+}
+
+.content pre>code {
+    color: rgba(220, 220, 220, 1);
+}

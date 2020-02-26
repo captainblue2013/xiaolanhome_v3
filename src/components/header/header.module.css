@@ -1,0 +1,20 @@
+.headline {
+    margin-bottom: 2.625rem;
+}
+
+.headline h1 {
+    color: #FFFFFF;
+    font-size: 1.75rem;
+    line-height: 2.625rem;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.headline input {
+    background-color: rgba(200, 200, 200, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.headline i {
+    color: rgba(255, 255, 255, 0.8);
+}

@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-const App: React.FC = () => {
+import { Col, Row } from 'antd';
+import React from 'react';
+
+import Author from './components/author';
+import Content from './components/content/index_hooks';
+import Header from './components/header';
+import Links from './components/links';
+import Page from './components/page';
+
+function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Row type="flex" justify="center">
+        <Col span={24}>
+          {window.location.pathname === '/' ?
+            (
+              <div>
+                <Header />
+                <Author />
+                {/* <Content keyword={keyword} /> */}
+                <Content />
+              </div>
+            ) : <Page />}
+          <Links />
+        </Col>
+      </Row>
     </div>
   );
 }

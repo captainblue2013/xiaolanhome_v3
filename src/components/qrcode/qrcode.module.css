@@ -1,0 +1,9 @@
+.qrcode {
+    width: 12rem;
+    height: 12rem;
+}
+
+.qrcode img {
+    width: 100%;
+    height: auto;
+}
