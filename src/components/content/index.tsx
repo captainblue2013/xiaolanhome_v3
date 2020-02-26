@@ -2,11 +2,11 @@ import { Button, Empty, notification, Icon } from 'antd';
 import axios from 'axios';
 import React, { Component } from 'react';
 
-import Card from './components/card';
+import Card from './card';
 import style from './style.module.css';
 import { Article } from './types';
-import connect from '../../state/connect';
-import { StateTree } from '../../state/combine';
+
+const apiUrl = 'http://api.lanhao.name';
 
 type ContentState = {
   articles: Array<Article>,
@@ -15,8 +15,11 @@ type ContentState = {
   page: number,
 };
 
+type ContentProps = {
+  keyword?: string
+};
 
-class Content extends Component<{}, ContentState> {
+class Content extends Component<ContentProps, ContentState> {
   state: ContentState = {
     page: 1,
     loading: true,
@@ -26,7 +29,6 @@ class Content extends Component<{}, ContentState> {
 
   fetchData(clear: boolean = false, keyword: string = '') {
     const { page } = this.state;
-    const { apiUrl } = (this.props as StateTree).constant;
     return axios.get(`${apiUrl}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
       .then(v => {
         const { data: { code, data } } = v;
@@ -57,8 +59,10 @@ class Content extends Component<{}, ContentState> {
     this.fetchData(true);
   }
 
-  componentWillReceiveProps(nextProps: StateTree) {
-    const { keyword: { keyword } } = nextProps;
+  componentWillReceiveProps(nextProps: ContentProps) {
+    console.log('clear?');
+    console.log(nextProps);
+    const { keyword } = nextProps;
     this.fetchData(true, keyword);
   }
 
@@ -98,7 +102,7 @@ class Content extends Component<{}, ContentState> {
           >
             继续阅读...
         </Button>)}
-        {/* {loading && (<Spin tip="Loading..."></Spin>)} */}
+
 
         {this.state.articles.length === 0 && !this.state.loading && (
           <Empty description={false} />
@@ -108,4 +112,4 @@ class Content extends Component<{}, ContentState> {
   }
 }
 
-export default connect(Content);
+export default Content;

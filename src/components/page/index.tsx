@@ -1,95 +1,65 @@
+import { useStore } from '@mohism/react-duce-ts';
 import { Tag } from 'antd';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { StateTree } from '../../state/combine';
-import connect from '../../state/connect';
-import { setHiddenSearch } from '../../state/keyword';
+import { tagColor } from '../content/func';
 import { Article } from '../content/types';
 import Header from '../header';
 import style from './page.module.css';
 
-const COLORS = [
-  'magenta',
-  'red',
-  'volcano',
-  'orange',
-  'gold',
-  'lime',
-  'green',
-  'cyan',
-  'blue',
-  'geekblue',
-  'purple',
-];
-
-class Page extends Component<{}, Article> {
-  state: Article = {
+export default function Page() {
+  const id: number = Number.parseInt(window.location.pathname.replace('/', ''), 10);
+  const [{ apiUrl }] = useStore('constant');
+  const [error, setError] = useState('');
+  const [article, setArticle] = useState({
     id: 0,
-    title: '',
-    time: 0,
+    title: 'loading ... ',
+    time: Date.now() / 1000,
     tags: [],
     desc: '',
     content: '',
-  }
+  } as Article);
 
-  tagColor(tag: string): string {
-    let index: number = 0;
-    for (let i = 0; i < tag.length; i++) {
-      index += tag.charCodeAt(i);
-    }
-    return COLORS[index % COLORS.length];
-  }
-
-  fetchData(id: number) {
-    const { apiUrl } = (this.props as StateTree).constant;
-    return axios.get(`${apiUrl}/article?id=${id}`)
-      .then(v => {
-        const { data: { code, data } } = v;
-        if (!code) {
-          this.setState(data);
-          window.document.title = (data as Article).title;
+  useEffect(() => {
+    axios.get(`${apiUrl}/article?id=${id}`)
+      .then((v: AxiosResponse<any>) => {
+        if (v.data?.code !== 0) {
+          setError(v.data?.message || 'unknown error');
+        } else {
+          window.document.title = v.data?.data?.title || window.document.title;
+          setArticle(v.data?.data);
         }
-      }).catch(e => {
-        console.log(e);
-      });
-  }
+      })
+      .catch((e: Error) => {
+        setError(e.message)
+      })
+  }, [id, apiUrl]);
 
-  componentDidMount() {
-    (this.props as StateTree).dispatch(setHiddenSearch(true));
-    const id: number = Number.parseInt(window.location.pathname.replace('/', ''), 10);
-    this.fetchData(id);
-  }
+  if (error) return <p>Error!</p>
 
-  render() {
-    const {
-      time,
-      tags,
-      content,
-    } = this.state;
-    return (
-      <div className={style.article}>
-        <Header />
-        <p>
-          <span>{dayjs(time * 1000).format('MMMM DD, YYYY')}</span>
-          {tags.map((tag) => {
-            return (
-              <Tag
-                key={tag}
-                style={{ backgroundColor: "#272B35" }}
-                color={this.tagColor(tag)}
-              >{tag}</Tag>
-            )
-          })}
-        </p>
-        <div
-          className={style.content}
-          dangerouslySetInnerHTML={{ __html: content || '' }}>
-        </div>
+  const { time, tags, content, title } = article;
+
+  return (
+    <div className={style.article}>
+      <Header title={title} hiddenSearch={true} />
+      <p>
+        <span>{dayjs(time * 1000).format('MMMM DD, YYYY')}</span>
+        {tags.map((tag: string) => {
+          return (
+            <Tag
+              key={tag}
+              style={{ backgroundColor: "#272B35" }}
+              color={tagColor(tag)}
+            >{tag}</Tag>
+          )
+        })}
+      </p>
+      <div
+        className={style.content}
+        dangerouslySetInnerHTML={{ __html: content || '' }}>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default connect(Page);

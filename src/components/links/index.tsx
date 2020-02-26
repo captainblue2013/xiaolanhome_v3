@@ -1,29 +1,27 @@
-import React, { Component } from "react";
-import style from './links.module.css';
-import { Icon, Popover } from "antd";
+import { useStore } from '@mohism/react-duce-ts';
+import { Icon, Popover } from 'antd';
+import React from 'react';
+
 import QrCode from '../qrcode';
-import connect from "../../state/connect";
-import { StateTree } from "../../state/combine";
+import style from './links.module.css';
 
+function Links() {
+  const [{ github }] = useStore('constant');
 
-class Links extends Component {
-
-  render() {
-    const { github } = (this.props as StateTree).constant;
-    return (
-      <div className={style.linksBar}>
-        <a href={github}><Icon type="github" />Github</a>
-        <a
-          onClick={(e) => { e.preventDefault() }}
-          href="."
-        >
-          <Popover placement="topLeft" content={<QrCode />}>
-            <Icon type="wechat" />Wechat
+  return (
+    <div className={style.linksBar}>
+      <a href={github}><Icon type="github" />Github</a>
+      <a
+        onClick={(e) => { e.preventDefault() }}
+        href="."
+      >
+        <Popover placement="topLeft" content={<QrCode />}>
+          <Icon type="wechat" />Wechat
           </Popover>
-        </a>
-      </div>
-    );
-  }
+      </a>
+      <p>build: 200215</p>
+    </div>
+  );
 }
-export default connect(Links);
-// export default Links;
+
+export default Links;

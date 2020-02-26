@@ -6,12 +6,14 @@ export enum KeywordActionType {
 
 export type KeywordState = {
   keyword: string,
-  hiddenSearch: boolean,
+}
+
+export interface IReducer {
+  (state: KeywordState, action: KeywordAction): KeywordState 
 }
 
 export const defaultState: KeywordState = {
   keyword: '',
-  hiddenSearch: false,
 }
 
 export type KeywordAction = {
