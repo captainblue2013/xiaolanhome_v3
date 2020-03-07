@@ -7,7 +7,7 @@ import style from './links.module.css';
 
 function Links() {
   const [{ github }] = useStore('constant');
-
+  
   return (
     <div className={style.linksBar}>
       <a href={github}><Icon type="github" />Github</a>

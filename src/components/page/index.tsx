@@ -5,22 +5,24 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 
 import { tagColor } from '../content/func';
-import { Article } from '../content/types';
+
 import Header from '../header';
 import style from './page.module.css';
+import { Article } from '../../service/types';
+import { useParams } from 'react-router-dom';
 
 export default function Page() {
-  const id: number = Number.parseInt(window.location.pathname.replace('/', ''), 10);
+  const { id } = useParams();
   const [{ apiUrl }] = useStore('constant');
   const [error, setError] = useState('');
-  const [article, setArticle] = useState({
+  const [article, setArticle] = useState<Article>({
     id: 0,
     title: 'loading ... ',
     time: Date.now() / 1000,
     tags: [],
     desc: '',
     content: '',
-  } as Article);
+  });
 
   useEffect(() => {
     axios.get(`${apiUrl}/article?id=${id}`)

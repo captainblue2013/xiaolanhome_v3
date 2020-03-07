@@ -5,10 +5,12 @@ import View from './view';
 
 function Author() {
   const [{ github, author }] = useStore('constant');
+  const [{ keyword }] = useStore('keyword');
   return (
     <View
       github={github}
       author={author}
+      keyword={keyword}
     />
   );
 }

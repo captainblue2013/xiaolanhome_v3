@@ -1,21 +1,27 @@
 import { Tag } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { memo } from 'react';
+import { useHistory } from 'react-router';
 
-import { Article } from '../types';
-import style from './card.module.css';
+import { Article } from '../../../service/types';
 import { tagColor } from '../func';
+import style from './card.module.css';
 
 
 function Card(props: Article) {
+  const history = useHistory();
   const { title, time, tags, desc, id } = props;
   return (
     <div className={style.card} key={id}>
       <h3>
         <a
           target="_blank"
+          href='/'
           rel="noopener noreferrer"
-          href={`/${id}`}
+          onClick={(e)=>{
+            e.preventDefault();
+            history.push(`/${id}`);
+          }}
         >
           {title}
         </a>
@@ -40,4 +46,4 @@ function Card(props: Article) {
 }
 
 
-export default Card;
+export default memo(Card);

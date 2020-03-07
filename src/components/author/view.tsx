@@ -7,9 +7,10 @@ import style from './author.module.css';
 type props = {
   github: string,
   author: string,
+  keyword?: string,
 }
 
-export default ({ github, author }: props) => {
+export default ({ github, author, keyword }: props) => {
   return (
     <div>
       <Row type="flex" justify="center">
@@ -19,6 +20,9 @@ export default ({ github, author }: props) => {
         <Col lg={21} md={18} sm={18} xs={16}>
           <p className={style.slogan}>
             <a href={github} >{author}</a> 个人博客
+            {keyword && (
+              ` ,与 "${keyword}" 相关的内容:`
+            )}
           </p>
         </Col>
       </Row>

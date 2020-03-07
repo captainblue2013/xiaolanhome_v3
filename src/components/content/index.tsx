@@ -1,115 +1,73 @@
-import { Button, Empty, notification, Icon } from 'antd';
-import axios from 'axios';
-import React, { Component } from 'react';
+import { useStore } from '@mohism/react-duce-ts';
+import { Button } from 'antd';
+import Axios, { AxiosResponse } from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import Card from './card';
 import style from './style.module.css';
-import { Article } from './types';
+import { Article } from '../../service/types';
 
-const apiUrl = 'http://api.lanhao.name';
+const PAGE_SIZE = 10;
 
-type ContentState = {
-  articles: Array<Article>,
-  loading: boolean,
-  hasMore: boolean,
-  page: number,
-};
-
-type ContentProps = {
-  keyword?: string
-};
-
-class Content extends Component<ContentProps, ContentState> {
-  state: ContentState = {
-    page: 1,
-    loading: true,
-    hasMore: true,
-    articles: []
-  }
-
-  fetchData(clear: boolean = false, keyword: string = '') {
-    const { page } = this.state;
-    return axios.get(`${apiUrl}/articles?page=${clear ? 1 : page}&keyword=${keyword}`)
-      .then(v => {
-        const { data: { code, data } } = v;
-        if (!code) {
-          this.setState({
-            page: (clear ? 1 : page) + 1,
-            hasMore: data.length === 10,
-            loading: false,
-            articles: [...(clear ? [] : this.state.articles), ...data],
-          });
-          if ((data as Array<Article>).length === 0) {
-            notification.warning({
-              icon: <Icon type="frown" style={{ color: '#108ee9' }} />,
-              message: '够了！',
-              description:
-                '已经没有更多的内容了。',
-              placement: 'bottomRight',
-            });
-          }
-        }
-      }).catch(e => {
-        console.log(e);
-      });
-  }
-
-
-  componentDidMount() {
-    this.fetchData(true);
-  }
-
-  componentWillReceiveProps(nextProps: ContentProps) {
-    console.log('clear?');
-    console.log(nextProps);
-    const { keyword } = nextProps;
-    this.fetchData(true, keyword);
-  }
-
-  buttonClick = () => {
-    if (this.state.loading) {
-      return false;
-    }
-    this.setState({
-      ...this.state,
-      loading: true,
-    });
+function Content() {
+  const [{ apiUrl }] = useStore('constant');
+  const [{ keyword }] = useStore('keyword');
+  const [page, setPage] = useState<number>(1);
+  const [articles, setList] = useState<Array<Article>>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  useEffect(() => {
+    setList([]);
+  }, [keyword]);
+  useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      this.fetchData();
+      Axios.get(`${apiUrl}/articles?page=${page}&keyword=${keyword}`)
+        .then((v: AxiosResponse<any>) => {
+          if (v.data?.code !== 0) {
+            setLoading(false);
+          } else {
+            const appendList: Array<Article> = (v.data?.data || []);
+            if (appendList.length < PAGE_SIZE) {
+              setHasMore(false);
+            }
+            setList((prevState: Array<Article>): Array<Article> => {
+              return [...prevState, ...appendList];
+            });
+            setLoading(false);
+          }
+        })
+        .catch((e: Error) => {
+          setLoading(false);
+        });
     }, 500);
+  }, [page, keyword, apiUrl]);
 
-  }
-
-  render() {
-    const { articles, loading, hasMore, /*page*/ } = this.state;
-
-    const buttonClick = this.buttonClick.bind(this);
-    return (
-      <div className={style.content}>
-        {
-          articles.map((article: Article) => {
-            return (
-              <Card {...article} key={article.id} />
-            )
-          })
-        }
-        {hasMore && (
-          <Button
-            ghost
-            block
-            onClick={buttonClick}
-            loading={loading}
-          >
-            继续阅读...
-        </Button>)}
+  return (
+    <div className={style.content}>
+      {
+        articles.map((article: Article) => {
+          return (
+            <Card {...article} key={article.id} />
+          )
+        })
+      }
+      {hasMore && (
+        <Button
+          ghost
+          block
+          onClick={() => { setPage(page + 1); }}
+          loading={loading}
+        >
+          继续阅读...
+      </Button>)}
 
 
-        {this.state.articles.length === 0 && !this.state.loading && (
-          <Empty description={false} />
-        )}
-      </div>
-    );
-  }
+      {/* {articles.length === 0 && !loading && (
+        <Empty description={false} />
+      )} */}
+    </div>
+  );
 }
 
 export default Content;
